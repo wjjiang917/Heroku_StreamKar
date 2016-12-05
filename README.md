@@ -1,39 +1,24 @@
-# node-js-getting-started
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+# Create a Java Web Application using Embedded Tomcat
 
-A barebones Node.js app using [Express 4](http://expressjs.com/).
+This tutorial will show you how to create a simple Java web application using embedded Tomcat.
 
-This application supports the [Getting Started with Node on Heroku](https://devcenter.heroku.com/articles/getting-started-with-nodejs) article - check it out.
+## Prerequisites
 
-## Running Locally
+* Basic Java knowledge, including an installed version of the JVM and Maven.
+* Basic Git knowledge, including an installed version of Git.
+* A Java web application. If you don't have one follow the first step to create an example. Otherwise skip that step.
 
-Make sure you have [Node.js](http://nodejs.org/) and the [Heroku Toolbelt](https://toolbelt.heroku.com/) installed.
+## Skip The Application Creation
 
-```sh
-$ git clone git@github.com:heroku/node-js-getting-started.git # or clone your own fork
-$ cd node-js-getting-started
-$ npm install
-$ npm start
-```
-
-Your app should now be running on [localhost:5000](http://localhost:5000/).
-
-## Deploying to Heroku
+If you want to skip the creation steps you can clone the finished sample and then skip to the 'Deploy Your Application to Heroku' section:
 
 ```
-$ heroku create
-$ git push heroku master
-$ heroku open
+$ git clone git@github.com:heroku/devcenter-embedded-tomcat.git
 ```
-or
 
-[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
+## Follow the Guide
 
-## Documentation
+If you would like to create the application yourself, then follow the Dev Center guide on how to [Create a Java Web Application using Embedded Tomcat](https://devcenter.heroku.com/articles/create-a-java-web-application-using-embedded-tomcat).
 
-For more information about using Node.js on Heroku, see these Dev Center articles:
 
-- [Getting Started with Node.js on Heroku](https://devcenter.heroku.com/articles/getting-started-with-nodejs)
-- [Heroku Node.js Support](https://devcenter.heroku.com/articles/nodejs-support)
-- [Node.js on Heroku](https://devcenter.heroku.com/categories/nodejs)
-- [Best Practices for Node.js Development](https://devcenter.heroku.com/articles/node-best-practices)
-- [Using WebSockets on Heroku with Node.js](https://devcenter.heroku.com/articles/node-websockets)
