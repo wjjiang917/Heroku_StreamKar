@@ -1,13 +1,24 @@
-<img src="https://cloud.githubusercontent.com/assets/10640964/5988570/4049a0a6-a990-11e4-9eff-7d65413105eb.jpg" />
+[![Deploy](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy)
+# Create a Java Web Application using Embedded Tomcat
 
-<a href="http://themefisher.com/download/small-apps-html5-app-landing-page/" > Live Preview </a>
+This tutorial will show you how to create a simple Java web application using embedded Tomcat.
 
-# small-apps
-Smart App is a clean and modern Landing Page Template for Mobile App. Built with Bootstrap 3.Well organized and very easy to customize, Smart App is better way to present and promote your startup mobile app website.
-Key Features
-1 Clean Design – App-Plus have been crafted with great care and attention to make it clean.
-2 Mobile Responsive – Fully responsive to meet the growing demand from the mobile market.
-3 Built With Bootstrap – Bootstrap framework allows you to quickly kickstart any web development projects.
-4 Fully Customizable – This template can be easily customized to fit your wants and needs.
+## Prerequisites
 
-PSD Credit:- http://www.psdbooster.com
+* Basic Java knowledge, including an installed version of the JVM and Maven.
+* Basic Git knowledge, including an installed version of Git.
+* A Java web application. If you don't have one follow the first step to create an example. Otherwise skip that step.
+
+## Skip The Application Creation
+
+If you want to skip the creation steps you can clone the finished sample and then skip to the 'Deploy Your Application to Heroku' section:
+
+```
+$ git clone git@github.com:heroku/devcenter-embedded-tomcat.git
+```
+
+## Follow the Guide
+
+If you would like to create the application yourself, then follow the Dev Center guide on how to [Create a Java Web Application using Embedded Tomcat](https://devcenter.heroku.com/articles/create-a-java-web-application-using-embedded-tomcat).
+
+
