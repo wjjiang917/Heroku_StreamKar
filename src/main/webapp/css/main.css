@@ -364,9 +364,62 @@ h1, h2, h3, h4, h5, h6 {font-weight:normal;margin:0 0 15px;}
 	3) slider Start
 ===========================*/
 
-#slider{background: url(../img/slider.jpg) no-repeat; background-size: cover; background-position: center center; padding-bottom: 255px;padding-top: 180px;}
-#slider .block{}
-#slider .block h2{color: #fff;font-family: 'Raleway', sans-serif; font-weight: 700; margin:0px; font-size: 36px}
+
+@media only screen and (max-width: 600px) {
+  #slider{background: url(../img/slider.jpg) no-repeat; background-size: cover;  padding-bottom: 100px;padding-top: 180px;}
+.img-logo{margin-top: 39px;
+position: absolute;
+width: 100px;
+margin-left: 25px;}
+#slider .block h2{color: #fff;font-family: 'Raleway', sans-serif; font-weight: 700; margin:0px; font-size: 8vw}
+}
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+  #slider{background: url(../img/slider.jpg) no-repeat; background-size: cover;  padding-bottom: 100px;padding-top: 180px;}
+.img-logo{margin-top: 39px;
+position: absolute;
+width: 100px;
+margin-left: 98px;}
+#slider .block h2{color: #fff;font-family: 'Raleway', sans-serif; font-weight: 700; margin:0px; font-size: 8vw}
+}
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+  #slider{background: url(../img/slider.jpg) no-repeat; background-size: cover; padding-bottom: 100px;padding-top: 180px;}
+.img-logo{margin-top: 39px;
+position: absolute;
+width: 100px;
+margin-left: 98px;}
+#slider .block h2{color: #fff;font-family: 'Raleway', sans-serif; font-weight: 700; margin:0px; font-size: 7vw}
+}
+.slider-text a{
+  display: inline-block;
+  margin-bottom: 5px;
+}
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+  #slider{background: url(../img/slider.jpg) no-repeat; background-size: cover; background-position: center center; padding-bottom: 255px;padding-top: 180px;}
+.img-logo{margin-top: 39px;
+position: absolute;
+width: 100px;
+margin-left: 98px;
+}
+#slider .block h2{color: #fff;font-family: 'Raleway', sans-serif; font-weight: 700; margin:0px; font-size: 6vw}
+}
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+  #slider{background: url(../img/slider.jpg) no-repeat; background-size: cover; background-position: center center; padding-bottom: 255px;padding-top: 180px;}
+  .img-logo{margin-top: 39px;
+  position: absolute;
+  width: 100px;
+  margin-left: 98px;
+  }
+  #slider .block h2{color: #fff;font-family: 'Raleway', sans-serif; font-weight: 700; margin:0px; font-size: 6vw}
+}
+
+
+
 .slider-text-area{}
 .sub-slider-text{margin: 0px; font-size: 36px; color:#e6ecf0;font-family: 'Raleway', sans-serif; font-weight: 300;line-height: 43px;}
 .slider-p{margin: 0px; color:#e1e6ea; font-size: 14px;padding-top: 40px}
@@ -381,7 +434,7 @@ h1, h2, h3, h4, h5, h6 {font-weight:normal;margin:0 0 15px;}
 	4) Service Start
 ===========================*/
 
-#service{ padding: 96px 0px;}
+#service{ padding: 50px 0px;}
 #service .block-top{text-align: center;}
 #service .service-header{margin: 0px}
 #service .service-header h1{color:#636C6C; font-size: 36px; font-family: 'Raleway', sans-serif; font-weight: 700; }
@@ -395,9 +448,9 @@ h1, h2, h3, h4, h5, h6 {font-weight:normal;margin:0 0 15px;}
 	5) contant Start
 ===========================*/
 
-#contant-1{background: #f5f8f9;padding: 80px 0px}
+#contant-1{background: #f5f8f9;padding: 25px 0px}
 .block-left{}
-.contant-1-text-area{padding-top: 80px}
+.contant-1-text-area{padding-top: 25px}
 .contant-1-head:after{background: #949C9C;
 content: "";
 height: 2px;
@@ -432,7 +485,7 @@ width: 102px;}
 .gallery-img{}
 .gallery-items-text{}
 .gallery-items-text p{color: #9ea5a5; font-size: 14px; margin: 0; padding-top: 45px;font-family: 'Raleway', sans-serif; font-weight: 400;}
-#gallery .owl-carousel .owl-controls{left: 0; margin-top: -40px; position: absolute; text-align: left; top: 50%; 
+#gallery .owl-carousel .owl-controls{left: 0; margin-top: -40px; position: absolute; text-align: left; top: 50%;
 width: 100%;}
 #gallery .owl-carousel .owl-controls .owl-buttons{}
 #gallery .owl-carousel .owl-controls .owl-buttons div{color: #9fa9a9;font-size: 50px; display: inline-block}
@@ -452,11 +505,11 @@ width: 100%;}
 	7) Contant-2 Start
 ===========================*/
 
-#contant-2{background: #f5f8f9;padding: 80px 0px}
+#contant-2{background: #f5f8f9;padding: 15px 0px}
 #contant-2 .block-left{}
 .contant-2-img{}
 #contant-2 .block-right{}
-.contant-2-text-area{padding-top: 102px;}
+.contant-2-text-area{padding-top: 25px;}
 .contant-2-text-area:{}
 .contant-2-header:after{background: #949C9C;
 content: "";
@@ -524,7 +577,7 @@ margin-left: 24px;
 font-size: 14px; color:#8C9494; font-family: 'Raleway', sans-serif; font-weight: 400;
 background: #FFFFFF; width: 555px;}
 .submit-bottom form input[type=submit]{border: none; padding: 21px 55px; background: #e74c3c; color:#fff; font-size: 20px;font-family: 'Proxima Nova Regular'; font-weight: 700; text-transform: uppercase;border-radius: 40px;}
-	
+
 /*=========================
 	 Submit CLOSE
 ===========================*/
@@ -578,9 +631,3 @@ width: 42px;}
 .store-img img{
     width: 165px !important;
 }
-
-
-
-
-
-
