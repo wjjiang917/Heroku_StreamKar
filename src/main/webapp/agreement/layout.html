@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html lang="en" prefix="og: http://ogp.me/ns#" xmlns:th="http//www.thymeleaf.org">
+<head th:fragment="meta">
+	<link th:href="@{/jsp/styles/pwStrength.css}" rel="stylesheet" />
+	<meta charset="utf-8">
+	<meta content="IE=edge" http-equiv="X-UA-Compatible">
+	<meta content="width=device-width, initial-scale=1" name="viewport">
+	<meta content="" name="description">
+	<meta content="Tipping Points Technology Ltd." name="author">
+
+	<link th:href="@{../../jsp/images/logo-icon-footer.png}" rel="icon" />
+	<!-- Custom styles for this template -->
+	<link th:href="@{/jsp/styles/bootstrap.min.css}" rel="stylesheet" />
+	<link th:href="@{/jsp/styles/BootstrapXL.css}" rel="stylesheet" />
+	<link th:href="@{/jsp/styles/perfect-scrollbar.min.css}"
+		rel="stylesheet" />
+	<link th:href="@{/jsp/styles/element.css}" rel="stylesheet" />
+
+	<link th:href="@{/jsp/styles/styles.css(v=${updateVersion})}" rel="stylesheet" />
+	<link th:href="@{/jsp/styles/font-awesome.min.css}" rel="stylesheet" />
+
+	<link th:href="@{/jsp/styles/sweetalert.css}" type="text/css"
+		rel="stylesheet" />
+	<link
+		th:href="@{https://fonts.googleapis.com/css?family=Open+Sans:400,600,700}"
+		type="text/css" rel="stylesheet" />
+	<link
+		th:href="@{https://fonts.googleapis.com/css?family=Montserrat:400,700}"
+		type="text/css" rel="stylesheet" />
+	<style type="text/css">
+		body .account-text-wrapper .gap-div{
+			height: 50px!important;
+		}
+		#searchIcon{
+			right: 21px;
+			top: 16px;
+		}
+		#search-tags{
+			height: 43px;
+		}
+
+	</style>
+
+</head>
+<body>
+
+	<th:block th:fragment="forgot-password-modal">
+		<div class="modal fade" id="forgot-password-modal" role="dialog"
+			style="display: none;" data-template="forgot-modal">
+			<div class="modal-dialog modal-sm">
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">
+							Forgot Password<img id='forgetpassimg' style='display: none'
+								class="spinner pull-right" src="/jsp/images/spinner.gif" />
+						</h4>
+					</div>
+					<div class="modal-body">
+						<!-- BEGIN FORGOT PASSWORD FORM -->
+						<form class="forgot-password-form modal-form" action=""
+							method="post">
+							<div class="alert alert-danger display-hide error-alert">
+								<span>Please enter your Account & Email, new password
+									will be sent to your email.</span>
+							</div>
+							<dl class="new_pwd_err" style="display: none;"
+								id="resetpwd_error">
+								<dd>
+									<span class="new_reg_pul"><a><label
+											id="resetpwd_msg"></label></a></span>
+								</dd>
+							</dl>
+							<div class="form-group hide">
+								<label class="control-label visible-ie8 visible-ie9">Username</label>
+								<input
+									class="form-control form-control-solid placeholder-no-fix"
+									type="text" autocomplete="off" placeholder="Username"
+									name="username" data-resetpwd-account />
+							</div>
+							<div class="form-group">
+								<label class="control-label visible-ie8 visible-ie9">Email
+									address</label> <input
+									class="form-control form-control-solid placeholder-no-fix"
+									type="email" autocomplete="off" placeholder="Email address"
+									name="email" data-resetpwd-email />
+							</div>
+							<div class="form-group">
+								<label class="control-label visible-ie8 visible-ie9">Validation
+									code</label> <input
+									class="form-control form-control-solid placeholder-no-fix"
+									type="text" autocomplete="off" placeholder="Validation code"
+									name="code" data-resetpwd-validcode />
+							</div>
+							<div class="form-group">
+								<img class="img-responsive" src="#"
+									style="width: 100%; height: 30px;" data-imgvalidcode />
+							</div>
+							<div class="form-actions">
+								<button type="button"
+									class="btn btn-block uppercase red-thunderbird"
+							        onclick="callResetPwd();" value="Send" id="resetpwd_submit">Send
+							</button>
+							</div>
+
+						</form>
+						<!-- END FORGOT PASSWORD FORM -->
+					</div>
+				</div>
+
+			</div>
+		</div>
+		<script>
+			function callResetPwd() {
+				/*
+				Ramsha Ambreen
+				CustomAnalytics.sendAnalytics Function works when SEND is clicked on Forgot Password? ,
+				it fires event for Action = Click
+				 */
+				CustomAnalytics.sendAnalytics({
+					"category" : "Recover Password",
+					"action" : "Recover Password Click",
+					"label" : "",
+				});
+
+				$('#reset_pwd #resetpwd_msg').empty();
+				$('#reset_pwd #resetpwd_error').hide();
+
+				// 校验输入
+				if (!Validate.email($('[data-resetpwd-email]'),
+						$('#resetpwd_msg'))
+						|| !Validate.validateCode(
+								$('[data-resetpwd-validcode]'),
+								$('#resetpwd_msg'))) {
+					$('#resetpwd_error').show();
+					$('#resetpwd_msg').addClass("font-red");
+					/*
+					Ramsha Ambreen
+					CustomAnalytics.sendAnalytics Function works when Recover Password is failed ,
+					it fires event for Action = Failed
+					 */
+					CustomAnalytics.sendAnalytics({
+						"category" : "Recover Password",
+						"action" : "Recover Password Failed",
+						"label" : "",
+					});
+					return false;
+				}
+
+				var option = {};
+				//option.account = $('[data-resetpwd-account]').val();
+				option.email = $('[data-resetpwd-email]').val();
+				option.validateCode = $('[data-resetpwd-validcode]').val();
+				document.getElementById("resetpwd_submit").disabled = true;
+				$("#forgetpassimg").show();
+				AjaxAPI.resetPasswordStreamKar(option, function(data) {
+									swal("Good job!", "Please check your email for password recovery link", "success");
+									/*
+									Ramsha Ambreen
+									CustomAnalytics.sendAnalytics Function works when email for Recover Password is sent successfully ,
+									it fires event for Action = Success
+									 */
+									CustomAnalytics.sendAnalytics({
+										"category" : "Recover Password",
+										"action" : "Recover Password Success",
+										"label" : "",
+									});
+									document.getElementById("resetpwd_submit").disabled = false;
+									$("#forgetpassimg").hide();
+									$('#forgot-password-modal').modal('hide');
+
+								},
+								function(data) {
+									$('[data-resetpwd-validcode]').val('');
+									$('[data-imgvalidcode]').attr('src',
+											'/verifycode?r=' + Math.random());
+									$('#resetpwd_msg').text(data.returnMsg);
+									$('#resetpwd_error').show();
+									/*
+									Ramsha Ambreen
+									CustomAnalytics.sendAnalytics Function works when Recover Password is failed ,
+									it fires event for Action = Failed
+									 */
+									CustomAnalytics.sendAnalytics({
+										"category" : "Recover Password",
+										"action" : "Recover Password Failed",
+										"label" : "",
+									});
+									document.getElementById("resetpwd_submit").disabled = false;
+									$("#forgetpassimg").hide();
+
+								});
+			}
+			$(function() {
+
+				$('[data-imgvalidcode]').attr('src',
+						'/verifycode?r=' + Math.random());
+			});
+		</script>
+	</th:block>
+	<th:block th:fragment="signup-modal">
+		<div class="modal fade" id="signup-modal" role="dialog"
+			style="display: none;" data-template="signup-modal">
+			<div class="modal-dialog modal-sm">
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">
+							Sign Up<img id='vloading' style='display: none'
+								class="spinner pull-right" src="/jsp/images/spinner.gif" />
+						</h4>
+					</div>
+					<div class="modal-body">
+						<!-- BEGIN SIGN UP FORM -->
+						<form class="signup-form modal-form " action="">
+							<p class="new_pwd_err" id="register_msg"
+								style="display: none; margin: -15px 0px 5px 0px"></p>
+							<div class="form-group">
+
+								<label class="control-label visible-ie8 visible-ie9">Username</label>
+								<input
+									class="form-control form-control-solid placeholder-no-fix"
+									type="text" id="reg_account" autocomplete="off" maxlength="20"
+									placeholder="Username" name="username" />
+							</div>
+							<div class="form-group">
+								<label class="control-label visible-ie8 visible-ie9">Email
+									address</label> <input
+									class="form-control form-control-solid placeholder-no-fix"
+									type="email" id="reg_email" autocomplete="off" maxlength="50"
+									placeholder="Email address" name="email" />
+							</div>
+							<div class="form-group">
+								<label class="control-label visible-ie8 visible-ie9">Password</label>
+								<input
+									class="form-control form-control-solid placeholder-no-fix"
+									type="password" id="inputPassword" name="password" onkeyup="pwstrength()"
+									autocomplete="off" placeholder="Password" />
+							</div>
+							<div id="complexity" class="default"></div>
+
+							<!--<span data-pwstrength>
+								<div id="pwd-container" >
+									<div class="pwstrength_viewport_progress"></div>
+								</div>
+							</span>-->
+							<div class="form-actions">
+								<button type="submit" id="register_submit"
+									class="btn btn-block uppercase red-thunderbird">Sign
+								up
+							</button>
+								<div class="text-center" style="margin-top: 15px;">
+									<a class="new-account" onclick="showLoginModal()"
+										href="javascript: void(0)">Sign In</a>
+								</div>
+							</div>
+						</form>						<!-- END SIGN UP FORM -->
+					</div>
+				</div>
+			</div>
+		</div>
+	</th:block>
+	<th:block th:fragment="invite-modal">
+		<!-- Modal -->
+		<div class="modal fade in modal-overflow" id="invitation-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="fa fa-times"></i></span></button>
+						<h4 class="modal-title" id="myModalLabel">Copy & Share with your friends</h4>
+					</div>
+					<div class="modal-body">
+						<div class="portlet light bordered">
+							<div class="portlet-body form invitation-container">
+								<!--text bix stsrt-->
+								<div class="copy-text-box">
+									<div class="input-group">
+										<div class="input-icon">
+											<i class="fa fa-lock fa-fw"></i> <input id="newpassword" class="form-control" type="text" name="Copy Code here" placeholder="Copy Link Here" data-code-invite>
+										</div>
+							<span class="input-group-btn">
+								<button id="genpassword" class="btn btn-success" type="button" data-copy-invite>
+									<i class="fa fa-files-o"></i>Copy
+								</button>
+							</span>
+									</div>
+								</div>
+								<div class="clear"></div>
+								<!--text box closed-->
+								<!--invitation & total talents label start-->
+								<div class="talent-invitation">
+									<div class="mt-element-step">
+										<div class="row step-default">
+											<div class="col-lg-4 col-md-4 col-sm-4 bg-grey mt-step-col">
+												<div class="mt-step-title uppercase font-grey-cascade">Users Invited</div>
+												<div class="mt-step-number first bg-white font-grey" data-invitecount>0</div>
+											</div>
+											<div class="col-lg-4 col-md-4 col-sm-4 bg-grey mt-step-col">
+												<div class="mt-step-title uppercase font-grey-cascade">Users Verified</div>
+												<div class="mt-step-number first bg-white font-grey" data-inviteEmailVerified="">0</div>
+											</div>
+											<div class="col-lg-4 col-md-4 col-sm-4 bg-grey mt-step-col mt-step-col-right">
+												<div class="mt-step-title uppercase font-grey-cascade">Talents Invited</div>
+												<div class="mt-step-number first bg-white font-grey" data-invitetalentcount>0</div>
+											</div>
+										</div>
+									</div>
+									<div class="clear"></div>
+								</div>
+								<!--invitation & total talents label closed-->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!--invitaion model closed-->
+	</th:block>
+	<th:block th:fragment="invite-modal-new" >
+			<!--Copy div content start-->
+		<div class="modal fade in modal-overflow" id="invite-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true"><i class="fa fa-times"></i></span></button>
+						<h4 class="modal-title" id="myModalLabel">Copy Paste in OBS</h4>
+						<h4 data-invitecount></h4>
+						<h4 data-invitetalentcount></h4>
+					</div>
+					<div class="modal-body">
+						<div class="portlet light bordered">
+							<div class="portlet-body form">
+								<!--Copy div content start-->
+								<div class="copy-container copy-container-obs"
+									 data-broadcast-copy>
+									<div class="inner-container">
+										<!--heading start-->
+										<div class="video-heading">
+											<h2 >Copy &amp; share it with your friends</h2>
+										</div>
+										<!--heading closed-->
+										<!--copy buttons stsrt-->
+										<div class="copy-container-inner">
+											<div class="copy-text-box">
+												<div class="input-group">
+													<div class="input-icon">
+														<i class="fa fa-lock fa-fw"></i> <input data-code id="newpassword"
+																								class="form-control" type="text" name="Copy Code here"
+																								placeholder="Copy Code Here">
+													</div>
+													<span class="input-group-btn">
+														<button id="genpassword" class="btn btn-success"
+																type="button" data-copy>
+															<i class="fa fa-files-o"></i>Copy
+														</button>
+													</span>
+												</div>
+											</div>
+											<div class="clear"></div>
+											<div class="clear"></div>
+										</div>
+										<!--copy buttons closed-->
+									</div>
+								</div>
+								<!--copy content closed-->
+								<div class="clear"></div><div class="clear"></div><div class="clear"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</th:block>
+	<th:block th:fragment="signin-modal" >
+		<div class="modal fade" id="login-modal" role="dialog"
+			data-template="login-modal">
+			<div class="modal-dialog modal-sm">
+				<!-- Modal content-->
+				<div class="modal-content">
+					<div class="modal-header">
+
+						<h4 class="modal-title">
+							Login to your account <img id='loading' style='display: none'
+								class="spinner pull-right" src="/jsp/images/spinner.gif" />
+							<!-- <i class="fa fa-circle-o-notch fa-spin pull-right"></i> -->
+						</h4>
+					</div>
+					<div class="modal-body">
+						<!-- BEGIN LOGIN FORM -->
+						<form class="login-form modal-form" action="" method="post" onsubmit="return false;">
+							<div class="alert alert-danger display-hide error-alert">
+								<span> Enter any username and password. </span>
+							</div>
+							<div class="form-group">
+								<p class="new_pwd_err" id="login_msg"
+									style="display: none; margin: -15px 0px 5px 0px"></p>
+								<label class="control-label visible-ie8 visible-ie9">Username</label>
+								<input
+									class="form-control form-control-solid placeholder-no-fix"
+									type="text" id="login_account" autocomplete="off"
+									maxlength="20" placeholder="Username" name="username" />
+							</div>
+							<div class="form-group ">
+								<label class="control-label visible-ie8 visible-ie9"
+									maxlength="20">Password</label> <input class="form-control form-control-solid placeholder-no-fix" id="login_pwd"
+							                                              type="password" autocomplete="off"
+							                                              placeholder="Password"
+									name="password" />
+							</div>
+
+								<div class="form-actions">
+								<button type="submit" id="login_submit"
+							        class="btn btn-block uppercase red-thunderbird">Login
+							</button>
+								<div class="text-center" style="margin-top: 15px;">
+									<a data-newaccount class="new-account"
+										onclick="showRegisterModal()" href="javascript: void(0)">Create
+										a new account</a>
+								</div>
+								<div class="text-center" style="margin-top: 15px;">
+									<a data-forgot class="new-account"
+										onclick="showForgotPasswordModal()" href="javascript: void(0)">Forgot
+										Password?</a>
+								</div>
+							</div>
+							<div class="login-options">
+								<h4 class="pull-left">or login with</h4>
+								<div class="action-social-icons pull-right">
+									<a
+										class=" social-icon-color facebook_3 btn btn-icon-only btn-default facebook"
+										id="facebook-btn" href="javascript:;"> <i
+										class="fa fa-facebook"></i>
+									</a> <a
+										class="social-icon-color twitter_3 btn btn-icon-only btn-default twitter"
+										id="twitter-btn" href="javascript:;"> <i
+										class="fa fa-twitter"></i>
+									</a> <a
+										class="social-icon-color google_3 btn btn-icon-only btn-default google-plus"
+										id="google-plus-btn" href="javascript:;"> <i
+										class="fa fa-google-plus"></i>
+									</a> <a
+										class="social-icon-color instagram_3 btn btn-icon-only btn-default instagram"
+										id="instagram-btn" href="javascript:;"> <i
+										class="fa fa-instagram"></i>
+									</a>
+								</div>
+							</div>
+						</form><!-- END LOGIN FORM -->
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</th:block>
+	<th:block th:fragment="header">
+	<th:block th:include="this::signin-modal"></th:block>
+	<th:block th:include="this::invite-modal"></th:block>
+	<th:block th:include="this::signup-modal"></th:block>
+	<th:block th:include="this::forgot-password-modal"></th:block>
+	<!--[if lt IE 10]>
+						<script type="text/javascript">
+							var ua = window.navigator.userAgent;
+							var msie = ua.indexOf("MSIE ");
+							if (msie > 0)
+								alert("Please Upgrade Your Browser!");
+						</script>
+
+	<![endif]-->
+	<script th:src="@{/common/scripts/jquery.cookie.js}"></script>
+
+		<nav class="navbar navbar-inverse navbar-fixed-top mega-menu" >
+			<!--menu left side start-->
+			<div class="menu-left-side">
+				<!--logo div start-->
+				<div class="logo-div">
+			<span class="logo-box-wrapper">
+				<a class="logo-box logo-box-new" href="/" > <img
+						src="/jsp/images/logo-icon-footer.png"
+						style="width: 85px; padding: 5px 0px;" data-pin-nopin="true" />
+											<p th:text="${siteName}"></p>
+				</a>
+			</span>
+				</div>
+				<!--logo div closed-->
+				<!--searchy engine stsrt-->
+				<div class="search-engine">
+					<form data-search-form action="/search/0">
+						<div class="form-group input-group search-engine-container">
+							<input id="search-tags" class="form-control" th:value="${keyword}" value=""	placeholder="Search Here" type="text" name="keyword" />
+						<span class="input-group-addon" id="basic-addon2">
+							<a onclick="$('[data-search-form]').submit()">
+								<i class="fa fa-search" id="searchIcon"></i>
+							</a>
+							</span>
+						</div>
+					</form>
+				</div>
+				<!--search engine closed-->
+			</div>
+			<!--menu left side closed-->
+			<!--menu right side start-->
+			<div class="menu-right-side">
+				<!--mobile menu start-->
+				<div class="navbar-header">
+					<button aria-controls="navbar" aria-expanded="false" class="navbar-toggle collapsed" data-target=".navbar-collapse" data-toggle="collapse" type="button"><span class="sr-only">Toggle navigation</span> <span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span></button>
+				</div>
+				<!--mobile menu closed-->
+				<!--web menu list start-->
+				<div class="collapse navbar-collapse navbar-contents navbar-contents-new" id="navbar-">
+					<ul class="nav navbar-nav navbar-right navbar-menu-new">
+						<!--<li class="dropdown header-flag">
+							<a href="javascript:;"><i class="fa fa-flag" aria-hidden="true"></i></a>
+							<ul class="dropdown-menu">
+								<li>
+									<a href="#" class="language">
+										<img class="flag" src="jsp/images/usa-flag.png" />English
+									</a>
+								</li>
+								<li>
+									<a href="#" class="language">
+										<img class="flag" src="jsp/images/germany-flag.png" />German
+									</a>
+								</li>
+							</ul>
+						</li>-->
+						<li><a href="/">Home</a></li>
+						<li data-invite-friends style="display: none;"><a onclick="showInviteLink()" href="javascript: void(0)" >Invite Friends</a></li>
+						<li><a href="/faq">FAQs</a></li>
+						<li><a onclick="showTaskModel()">Rewards</a></li>
+						<li><a  data-get-live> Get Live
+						</a></li>
+						<li class="sign-up-btn" data-sign-in >
+							<a onclick="showLoginModal()" href="javascript: void(0)">Sign
+								In</a></li>
+						<li class="sign-up-btn header-btns" data-profile-stuff
+							style="display: none">
+							<div class="dropdown dropdown-user header-dropdown">
+								<a href="javascript: void(0)" class="dropdown-toggle"
+								   onClick="checkBalance();"
+								   data-toggle="dropdown" data-hover="dropdown"
+								   data-close-others="true">
+									<div class="header-menu">
+										<div class="profile-img-div" data-image></div>
+										<span class="username username-hide-on-mobile" data-name></span>
+										<i class="fa fa-angle-down fa-fw"></i>
+									</div>
+								</a>
+								<ul class="dropdown-menu dropdown-menu-default">
+									<li><a href="/profile"> <i class="fa fa-user fa-fw"></i>
+										My Profile
+									</a></li>
+									<li class="divider"></li>
+									<li><a href="/profile"> <i
+											class="fa fa-money"></i> Balance: <strong data-money>
+										tk</strong>
+									</a></li>
+									<li><a href="/profile#subscriptions-tab"> <i
+											class="fa fa-heart fa-fw"></i> Subscription
+									</a></li>
+									<li><a href="/agencies"><i class="fa fa-users"></i> Agency</a></li>
+									<li><a href="/store"><i class="fa fa-shopping-cart"></i> Store</a></li>
+									<li><a href="/contact"><i class="fa fa-envelope"></i> Contact</a></li>
+									<li><a href="" data-anchor> <i
+											class="fa fa-dot-circle-o fa-fw"></i> Get Live
+									</a></li>
+
+
+									<li class="divider"></li>
+									<li><a class="logout"> <i
+											class="fa fa-sign-out fa-fw"></i> Sign Out
+									</a></li>
+								</ul>
+							</div>
+						</li>
+					</ul>
+				</div>
+				<!--web menu list closed-->
+			</div>
+			<!--menu right side closed-->
+		</nav>
+		<div class="clear"></div>
+		<div class="account-text-wrapper" data-accountverification style="display:none">
+			<div  class="account-text-container text-center">
+				<div class="inner-container">
+					<p><span>Account is not verified yet</span><button onClick="resendEmail()" id="resendEmailButton" class="resend-btn">Resend Email</button></p>
+				</div>
+			</div>
+			<div class="gap-div"></div>
+		</div>
+		<div class="task-container">
+							<!-- Modal -->
+							<div class="modal fade in modal-overflow" id="taskModal" tabindex="-1"
+								role="dialog" aria-labelledby="myModalLabel">
+								<div class="modal-dialog" role="document">
+									<div class="modal-content">
+										<div class="modal-header">
+											<h4 class="modal-title" id="myModalLabel">
+												My Tasks <img id='loadingyo' style='display: none'
+													class="spinner pull-right" src="/jsp/images/spinner.gif" />
+											</h4>
+										</div>
+										<div class="modal-body">
+											<div class="portlet light bordered">
+												<div class="portlet-title">
+													<div class="caption">
+														<i class="icon-equalizer font-red-sunglo"></i> <span
+															class="caption-subject font-red-sunglo bold">Claim
+															exciting rewards by completing these task</span>
+													</div>
+												</div>
+												<div class="portlet-body form">
+													<!-- BEGIN FORM-->
+													<form action="#" class="form-horizontal">
+														<div class="form-body" id="abcd">
+															<!--  <div class="form-group last">
+							                            <label class="col-md-5 control-label">Create/Update Nickname</label>
+							                            <div class="col-md-7">
+							                                <p class="form-control-static navbar-left"> 50tk </p>
+							                                <span class="help-block navbar-left task-status">(Incomplete)</span>
+							                                <button type="submit" class="btn green navbar-right reward-button">Claim</button>
+							                            </div>
+							                        </div> -->
+														</div>
+													</form>
+													<!-- END FORM-->
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+		</div>
+		<!--account verified text container stsrt-->
+	<!--	<div class="container">
+			<div class="account-text-container text-center">
+				<div class="container">
+					<div class="inner-container">
+						<p>Account is not verified yet</p>
+					</div>
+				</div>
+			</div>
+		</div>-->
+		<!--account verified text container closed-->
+	</th:block>
+	<th:block th:fragment="top-slideshow">
+		<div class="landing-page-slider text-center">
+
+				<!--flip cover flow stsrt-->
+				<div id="coverflow" style="visiblity:hidden;">
+					<ul class="flip-items flipster-heightfix" >
+						<th:block th:each="topDataRoom,loop :${topData}">
+							<a th:href=@{'/stream?v='+${topDataRoom.id}}>
+								<li data-flip-title="Red" style="list-style-type: none;">
+								<div class="flip-image-slide flip-image-slide-1 user-status"
+								     th:style="'background-image:url(' + ${misc.getThymeLeafPath(topDataRoom.id,8,topDataRoom.roomimg,0)} + ');'">
+										<div class="top-live-button" th:if="${topDataRoom.isLive()== true}">
+												<div class="live">
+													<span><i class="fa fa-circle live-icon"></i>Live</span>
+												</div>
+										</div>
+										<div class="top-live-button" th:if="${topDataRoom.isLive()== false}">
+											<div class="live offline">
+												<span><i class="fa fa-circle live-icon"></i>Offline</span>
+											</div>
+										</div>
+		 							</div>
+
+									<div class="text-center">
+										<p th:text="${topDataRoom.nickname}"></p>
+										<span th:text="${topDataCategories[loop.index]}"></span>
+									</div>
+								</li>
+							</a>
+						</th:block>
+					</ul>
+				</div>
+				<!--flip cover flow closed-->
+
+			<div class="clear"></div>
+		</div>
+
+	</th:block>
+
+	<th:block th:fragment="footer">
+	<div class="footer-space-area"></div>
+		<footer class="footer-container">
+			<div class="container">
+				<div class="row">
+					<div class="col-xs-2 col-lg-2 col-md-2 col-sm-2 footer-column footer-column-div footer-logo-container">
+						<img class="img-responsive footer-logo" src="/jsp/images/logo-icon-footer.png" />
+					</div>
+					<div class="col-xs-9 col-lg-9 col-md-9 col-sm-9 footer-column footer-column-div">
+						<ul class="footer-row-links text-right">
+							<li><a href="/contact">Contact Us</a></li>
+							<li><a href="/agreement">Privacy Policy</a></li>
+							<li><a href="/agreement">Terms & Conditions</a></li>
+							<li><a href="/faq">Frequently Asked Questions</a></li>
+						</ul>
+						<div class="clear"></div>
+					<p class="text-right">Copyright <i class="fa fa-copyright copyright"></i> 2016 All Rights Reserved.
+					</p>
+					<p class="text-right">Created with <i class="fa fa-heart"></i>by Tipping Points Technology Ltd.
+					</p>
+					</div>
+				</div>
+			</div>
+		</footer>
+	</th:block>
+</body>
+
+
+<!-- defining initializer jsp things -->
+<th:block th:fragment="initializer">
+	<script>
+
+		$(function() {
+			var input = $('[data-code-invite]');
+			$('[data-copy-invite]').on('click', function () {
+				input.select();
+				//input.select();
+				// Copy command is supported on ie10+ which is the minimum
+				// version or streaming page support
+				document.execCommand('copy');
+			});
+
+			$(".login-form").removeAttr("onsubmit");
+			userLoginInfo = null;
+			if(getURLParam('key')!=null)
+			{
+				showRegisterModal();
+			}
+			AjaxAPI.userCheckLogin(null, function(data) {
+				if (data.record) {
+
+					userLoginInfo = data.record.userInfo;
+					if(userLoginInfo.email != null && userLoginInfo.email != "" &&
+							(userLoginInfo.verify == null || userLoginInfo.verify==0))
+						$('[data-accountverification]').show();
+					else
+						$('[data-accountverification]').hide();
+					/*
+					 Ramsha Ambreen
+					 If user is logged in, set the user information in analytics tracker
+					 */
+					CustomAnalytics.setUserInformation({
+						"isLoggedIn" : "Yes",
+						"userId" : userLoginInfo.id,
+						"balance" : userLoginInfo.money+"",
+						"level" : userLoginInfo.level+"",
+						"accountType" : userLoginInfo.status+"",
+						"agency": userLoginInfo.agency+""
+					});
+
+					$('[data-profile-stuff]').show();
+					$('[data-sign-in]').hide();
+				}
+			});
+			if (userLoginInfo == null) {
+				$('[data-accountverification]').hide();
+				//alert('hello');
+				/*
+				 Ramsha Ambreen
+				 If user is logged out, empty the user information in analytics tracker
+				 */
+				CustomAnalytics.setUserInformation({
+					"isLoggedIn" : "No",
+					"userId" : "null",
+					"balance" : "null",
+					"level" : "null",
+					"accountType" : "null",
+					"agency": "null"
+				});
+				$('[data-profile-stuff]').hide();
+				$('[data-get-live-button]').hide();
+				$('[data-sign-in]').show();
+				$("[data-get-live]").click(function (){showLoginModal();});
+
+			} else {
+				$("[data-invite-friends]").show();
+				//renderMission();
+				$('[data-name]').text(userLoginInfo.nickname);
+				AjaxAPI.invite(userLoginInfo.id, function(data){
+					$('[data-invitecount]').text(data.record);
+				});
+				AjaxAPI.inviteEmailVerified(userLoginInfo.id, function(data){
+					$('[data-inviteEmailVerified]').text(data.record);
+				});
+				AjaxAPI.inviteTalentCount(userLoginInfo.id, function(data){
+					$('[data-invitetalentcount]').text(data.record);
+				});
+				/*swal("toyo"+urlInvite);*/
+				$('[data-code-invite]').val(URL_add_parameter(location.href,"key", userLoginInfo.id));
+				$('[data-money]').text(userLoginInfo.money);
+				if (userLoginInfo.status == 1)
+				{
+					$('[data-anchor]').attr('href', '/stream?v=' + userLoginInfo.id);
+					$("[data-get-live]").attr('href', '/stream?v=' + userLoginInfo.id);
+				}
+				else {
+					$('[data-anchor]').attr('href', '/profile#talent');
+					$("[data-get-live]").attr('href', '/profile#talent');
+				}
+				var imagePath = Images.head(userLoginInfo.headimg,
+						userLoginInfo.id, "A");
+				$('[data-image]').css('background-image', "url(" + imagePath + ")");
+				$('[data-profile-stuff]').show();
+				$('[data-sign-in]').hide();
+			}
+			//userLoginInfo = null;
+
+		});
+
+		var role = 1
+		$('#login-modal #login_account').focus()
+		/*
+		 Sheikh Ozair Bilal
+		 callLogin Function works if login button on modal is clicked,
+		 it validates and submit the form using ajax
+		 || !$(this).closest('.item').find('.task_state').hasClass('task_finish')
+		 */
+
+
+		function clickReward(obj) {
+
+			if ($(obj).hasClass('received')) {
+
+				return false;
+			}
+			$('#loadingyo').show();
+
+			var selectedItem = $(obj).closest('.item');
+			var missionId = selectedItem.data('missionId');
+			var missionName = selectedItem.data('missionName');
+			var missionReward = selectedItem.data('missionReward');
+			if(missionReward!=null) {
+				missionReward = missionReward.split('tk');
+				missionReward = missionReward[0];
+				console.log(missionReward+"yo");
+			}
+
+
+			AjaxAPI.getMissionReward(missionId, function() {
+				$('#loadingyo').hide();
+				/*
+				 Ramsha Ambreen
+				 CustomAnalytics.sendAnalytics Function works for  VC,
+				 it fires event for Action = Free VC
+				 */
+				CustomAnalytics.sendAnalytics({
+					"category" : "Virtual Currency",
+					"action" : "Free VC",
+					"label" : missionName, // Reward Action
+					"value" : missionReward, // value of reward
+				});
+				renderMission();
+				//userCheckLogin();
+			});
+		}
+		function URL_add_parameter(url, param, value){
+			var hash       = {};
+			var parser     = document.createElement('a');
+
+			parser.href    = url;
+
+			var parameters = parser.search.split(/\?|&/);
+
+			for(var i=0; i < parameters.length; i++) {
+				if(!parameters[i])
+					continue;
+
+				var ary      = parameters[i].split('=');
+				hash[ary[0]] = ary[1];
+			}
+
+			hash[param] = value;
+
+			var list = [];
+			Object.keys(hash).forEach(function (key) {
+				list.push(key + '=' + hash[key]);
+			});
+
+			parser.search = '?' + list.join('&');
+			return parser.href;
+		}
+		function renderMission() {
+			AjaxAPI.queryMission(function(data) {
+				if (data.record && data.record.length > 0) {
+					$('#loadingyo').hide();
+					var hasReward = false;
+					var missionHtml = [];
+					var html = '';
+
+					for (var i = 0; i < data.record.length; i++) {
+
+						var curData = data.record[i];
+
+						var taskStatus = $i18n('c_undone');
+						taskStatus = "Incomplete";
+						var taskClass = "";
+						if (curData.status == 1) {
+							taskStatus = $i18n('c_done');
+							taskStatus = "Completed";
+							taskClass = " task_finish ";
+						} else if (curData.status == 2) {
+							taskStatus = $i18n('c_overdue');
+						}
+						var getStatus = "Todo";
+						var getClass = "";
+						if (curData.receive) {
+							getStatus = "√";
+							getClass = " received ";
+						} else if (curData.status == 1) {
+							getStatus = "Claim Reward";
+						}
+
+						if (!hasReward && curData.status == 1
+								&& !curData.receive) {
+							hasReward = true;
+						}
+
+						html += '<div class="form-group last item" data-mission-id="' + curData.id + '" data-mission-name="' + curData.name + '" data-mission-reward="' + curData.reward + '">'
+						html += '<div class="col-xs-12 col-sm-10 col-md-9 col-lg-9">'
+						if (curData.status == 1) {
+							html += '<p class="task-name"><i class="fa fa-fw fa-check check-color"></i>'
+									+ curData.name + '</p>'
+						} else {
+							html += '<p class="task-name"><i class="fa fa-fw fa-times cross-color"></i>'
+									+ curData.name + '</p>'
+						}
+						html += '<p class="reward-details">'
+								+ curData.reward + '</p></div>'
+						/* html += '<span class="help-block navbar-left task-status">'
+						 + taskStatus + '</span>' */
+						if (curData.status == 1) {
+							html += '<div class="col-xs-12 col-sm-2 col-md-3 col-lg-3"><button type="button" class="btn green pull-right reward-button missions_panel '
+									+ getClass
+									+ '" onclick="clickReward(this);">'
+									+ getStatus + '</button></div>'
+						}
+						html += '</div>';
+
+					}
+					//$('.form-horizontal .form-body .form-group last').html(missionHtml.join(''));
+					var el = document.getElementById("abcd");
+					el.innerHTML = html;
+					//$('[data-html-inserting]').innerHTML = html;
+					if (hasReward) {
+						$('.mission_container .coins').show();
+					} else {
+						$('.mission_container .coins').hide();
+					}
+				} else {
+					//swal('noAlert');
+					//$('.form').hide();
+				}
+
+			});
+		}
+		function callLogin() {
+			/*
+			 Ramsha Ambreen
+			 CustomAnalytics.sendAnalytics Function works if login button on modal is clicked,
+			 it fires event for Action = Click
+			 */
+			CustomAnalytics.sendAnalytics({
+				"category" : "Login",
+				"action" : "Click",
+				"label" : "",
+				"value" : "0",
+			});
+
+			document.getElementById("login_submit").disabled = true;
+			$("#loading").show();
+
+			/*  if ($('#login-modal #login_submit').hasClass('waiting')) {
+			 return false;
+			 }*/
+			$('#login-modal #login_msg').empty();
+			$('#login-modal #login_div_id .left_login input').removeClass(
+					'txt_login_err');
+
+			if (!$('#login-modal #login_account')) {
+				$('#login-modal #login_msg').text('Username Empty').addClass(
+						"font-red").show();
+				return false
+			} else if (!$('#login-modal #login_pwd')) {
+				$('#login-modal #login_msg').text('Password Empty').addClass(
+						"font-red").show();
+				return false
+			}
+
+			AjaxAPI.userLogin($('#login-modal #login_account').val(), $(
+					'#login-modal #login_pwd').val(), function(data) {
+				$.cookie('ws_auth', data.record, {
+					path : "/"
+				});
+				/* alert($.cookie('ws_auth')); */
+				AjaxAPI.userCheckLogin(null, function(data) {
+					if (data.record) {
+						/*
+						 Umair
+						 CustomAnalytics.sendAnalytics Function works if user is logged in successfully,
+						 it fires event for Action = Success
+						 */
+						CustomAnalytics.sendAnalytics({
+							"category" : "Login",
+							"action" : "Success",
+							"label" : data.record.userInfo.status+"",
+							"value" : "0",
+						});
+					}
+				});
+
+				document.getElementById("login_submit").disabled = false;
+				$("#loading").hide();
+				location.reload();
+
+			}, function(data) {
+				/*
+				 Umair
+				 CustomAnalytics.sendAnalytics Function works if user login is failed,
+				 it fires event for Action = Failed
+				 */
+				CustomAnalytics.sendAnalytics({
+					"category" : "Login",
+					"action" : "Failed",
+					"label" : "",
+					"value" : "0",
+				});
+				document.getElementById("login_submit").disabled = false;
+				$("#loading").hide();
+				$('#login-modal #login_msg').addClass("font-red").text(
+						data.returnMsg).show();
+			});
+		}
+
+		$('#signup-modal #reg_account').keyup(function(){
+			var length = $(this).val().length;
+			if (length > 15) {
+				$(this).val($(this).val().slice(0, 15));
+				length = 15;
+			}
+			$('#signup-modal #reg_account').text(15 - length);
+		});
+		/*
+		 Sheikh Ozair Bilal
+		 callRegister Function works if signup button on modal is clicked,
+		 it validates and submit the form using ajax
+		 */
+		function callRegister() {
+			/*
+			 Ramsha Ambreen
+			 CustomAnalytics.sendAnalytics Function works if Signup button on modal is clicked,
+			 it fires event for Action = Click
+			 */
+			CustomAnalytics.sendAnalytics({
+				"category" : "Signup",
+				"action" : "Click",
+				"label" : "",
+				"value" : "0",
+			});
+			document.getElementById("register_submit").disabled = true;
+			$("#vloading").show();
+			$('#signup-modal #register_msg').empty();
+			// $('#signup-modal #register_div_id .left_login input').removeClass('txt_login_err');
+
+			if (!$('#signup-modal #reg_account')) {
+				$('#signup-modal #register_msg').text('Username Empty').addClass(
+						"font-red").show();
+				return false
+			} else if (!$('#signup-modal #reg_email')) {
+				$('#signup-modal #register_msg').text('Email Empty').addClass(
+						"font-red").show();
+				return false
+			} else if (!$('#signup-modal #inputPassword')) {
+				$('#signup-modal #register_msg').text('Password Empty').addClass(
+						"font-red").show();
+				return false
+			}
+
+			var option = {};
+			option.account = $('#signup-modal #reg_account').val();
+			option.email = $('#signup-modal #reg_email').val();
+
+			var RegEx = /^[a-zA-Z0-9._-]{3,15}$/;
+			var isValid = !(RegEx.test(option.account));
+			if(isValid)
+			{
+				document.getElementById("register_submit").disabled = false;
+				$("#vloading").hide();
+				$('#signup-modal #register_msg').addClass("font-red").text("username must contain 3 to 15 letters and numbers only with no space").show();
+				return false
+			}
+
+			/* option.email = option.email.trim();
+			 if(option.email.length == 0)
+			 {
+			 $('#signup-modal #register_msg').addClass("font-red").text(
+			 "Please enter email").show();
+			 return false
+			 } */
+
+			option.password = $('#signup-modal #inputPassword').val();
+			if(option.password.length < 8 ){
+				document.getElementById("register_submit").disabled = false;
+				$("#vloading").hide();
+				$('#signup-modal #register_msg').addClass("font-red").text("password must contain atleast 8 characters").show();
+				return false;
+			}
+			else{
+				$('#signup-modal #register_msg').addClass("font-red").text("").hide();
+			}
+
+
+			if(getURLParam('key') != null)
+				option.invitedBy=getURLParam('key');
+			else
+				option.invitedBy=null;
+			AjaxAPI.userRegister(option, function(data) {
+				//$.cookie('ws_auth', data.record, {path: "/"});
+				/*
+				 Ramsha Ambreen
+				 CustomAnalytics.sendAnalytics Function works if user signup is successful,
+				 it fires event for Action = Success
+				 */
+				CustomAnalytics.sendAnalytics({
+					"category" : "Signup",
+					"action" : "Success",
+					"label" : "",
+					"value" : "0",
+				});
+				CustomAnalytics.sendAnalytics({
+					"category" : "Virtual Currency",
+					"action" : "Free VC",
+					"label" : "Signup",
+					"value" : "200",
+				});
+				document.getElementById("register_submit").disabled = false;
+				$("#vloading").hide();
+
+				var str = window.location.href.toString();
+				var res = str.split("&");
+				var str = res[0];
+				var res = str.split("/?key=");
+				window.location = res[0];
+			}, function(data) {
+				document.getElementById("register_submit").disabled = false;
+				$("#vloading").hide();
+				$('#signup-modal #register_msg').addClass("font-red").text(
+						data.returnMsg).show();
+				/*
+				 Ramsha Ambreen
+				 CustomAnalytics.sendAnalytics Function works if user signup is failed,
+				 it fires event for Action = Failed
+				 */
+				CustomAnalytics.sendAnalytics({
+					"category" : "Signup",
+					"action" : "Failed",
+					"label" : "",
+					"value" : "0",
+				});
+			});
+		}
+
+		/*
+		 Sheikh Ozair Bilal
+		 Following code works for signup using the social media applications
+
+		 */
+		// google plus
+		$('body').delegate('.google_3', 'click', function(event) {
+			/*
+			 Ramsha Ambreen
+			 CustomAnalytics.sendAnalytics Function works when Google+ is used for Login,
+			 it fires event for Label = Click
+			 */
+			CustomAnalytics.sendAnalytics({
+				"category" : "Social Login",
+				"action" : "Google+",
+				"label" : "Click",
+				"value" : "0",
+			});
+
+			openWin("/sns/google/authorize", "authorize_google");
+		});
+		// twitter
+		$('body').delegate('.twitter_3', 'click', function(event) {
+			/*
+			 Ramsha Ambreen
+			 CustomAnalytics.sendAnalytics Function works when Twitter is used for Login,
+			 it fires event for Label = Click
+			 */
+			CustomAnalytics.sendAnalytics({
+				"category" : "Social Login",
+				"action" : "Twitter",
+				"label" : "Click",
+				"value" : "0",
+			});
+			openWin("/sns/twitter/authorize", "authorize_twitter");
+		});
+		// facebook
+		$('body').delegate('.facebook_3', 'click', function(event) {
+			/*
+			 Ramsha Ambreen
+			 CustomAnalytics.sendAnalytics Function works when Facebook is used for Login,
+			 it fires event for Label = Click
+			 */
+			CustomAnalytics.sendAnalytics({
+				"category" : "Social Login",
+				"action" : "Facebook",
+				"label" : "Click",
+				"value" : "0",
+			});
+			// window.open(httpsPath+"sns/facebook/login");
+			// location.href = "/sns/facebook/authorize";
+			openWin("/sns/facebook/authorize", "authorize_facebook");
+		});
+		$('body').delegate('.instagram_3', 'click', function(event) {
+			/*
+			 Ramsha Ambreen
+			 CustomAnalytics.sendAnalytics Function works when Instagram is used for Login,
+			 it fires event for Label = Click
+			 */
+			CustomAnalytics.sendAnalytics({
+				"category" : "Social Login",
+				"action" : "Instagram",
+				"label" : "Click",
+				"value" : "0",
+			});
+			openWin("/sns/instagram/authorize", "authorize_instagram");
+		});
+		$('body').on('click', '.logout', function() {
+			AjaxAPI.userLogout(function() {
+
+				/*
+				 Ramsha Ambreen
+				 CustomAnalytics.sendAnalytics Function works when logout button is clicked,
+				 it fires event for Action = Click
+				 */
+				CustomAnalytics.sendAnalytics({
+					"category" : "Logout",
+					"action" : "Click",
+					"label" : "",
+					"value" : "0",
+				});
+
+				$.removeCookie('ws_auth');
+				document.getElementById("login_submit").disabled = false;
+				$("#loading").hide();
+				/* 	alert($.cookie('ws_auth')); */
+				location.reload();
+			});
+		});
+
+		$(function() {
+
+			$(".login-form:first").submit(function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+
+				callLogin();
+
+				return false;
+			});
+
+			$("#login_submit").click(function() {
+				callLogin();
+			});
+
+			$(".signup-form:first").submit(function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+
+				callRegister();
+
+				return false;
+			});
+
+			$("#register_submit").click(function() {
+				//callRegister();
+			});
+		});
+
+		function sendEmailForVerification()
+		{
+			if(userLoginInfo != null)
+			{
+				var option = {};
+				option.userId = userLoginInfo.id;
+				option.email = userLoginInfo.email;
+				AjaxAPI.setemailverificationtoken(option, function(data){
+					//$('[data-invitecount]').text(data.record);
+				});
+			}
+		}
+		/* $('#taskModal').modal('show'); */
+		function showInviteLink(){
+			if(userLoginInfo!=null)
+			{
+				$('.modal').modal('hide');
+				$('#invitation-modal').modal('show');
+			}
+			else
+			{
+				showLoginModal();
+			}
+		}
+		function showLoginModal() {
+			$('.modal').modal('hide');
+			$('#login-modal').modal('show');
+			/*
+			 Umair
+			 CustomAnalytics.sendAnalytics Function works when login modal pops up,
+			 it fires event for Action = Show
+			 */
+			CustomAnalytics.sendAnalytics({
+				"category" : "Login",
+				"action" : "Show",
+				"label" : "",
+				"value" : "0",
+			});
+
+		}
+
+		function showRegisterModal() {
+			$('.modal').modal('hide');
+			$('#signup-modal').modal('show');
+			/*
+			 Ramsha Ambreen
+			 CustomAnalytics.sendAnalytics Function works when Create a new account is clicked,
+			 it fires event for Action = Show
+			 */
+			CustomAnalytics.sendAnalytics({
+				"category" : "Signup",
+				"action" : "Show",
+				"label" : "",
+				"value" : "0",
+			});
+
+		}
+
+		function showForgotPasswordModal() {
+			$('.modal').modal('hide');
+			$('#forgot-password-modal').modal('show');
+			/*
+			 Ramsha Ambreen
+			 CustomAnalytics.sendAnalytics Function works when Forgot Password? is clicked,
+			 it fires event for Action = Show
+			 */
+			CustomAnalytics.sendAnalytics({
+				"category" : "Recover Password",
+				"action" : "Recover Password Show",
+				"label" : "",
+				"value" : "0",
+			});
+		}
+		function showTaskModel() {
+			if (userLoginInfo) {
+				$('#loadingyo').show();
+				renderMission();
+				$('#taskModal').modal('show');
+			} else {
+				$('#login-modal').modal('show');
+			}
+
+		}
+		function checkBalance() {
+			AjaxAPI.userCheckLogin(null, function (data) {
+				$('[data-money]').text(data.record.userInfo.money);
+			});
+		}
+	</script>
+<!-- Placed at the end of the document so the pages load faster -->
+	<script th:src="@{/jsp/scripts/sweetalert.min.js(v=${updateVersion})}"></script>
+	<script th:src="@{/jsp/scripts/bootstrap.min.js(v=${updateVersion})}"></script>
+	<script th:src="@{/common/scripts/jquery.i18n.js(v=${updateVersion})}"></script>
+
+<!-- loadJs is provided by tool.js -->
+	<script th:src="@{/common/scripts/tool.js(v=${updateVersion})}"></script>
+
+<script>
+	loadJS("config", "/common/scripts/video-config.js?v=" + Math.random());
+</script>
+
+	<script th:src="@{/common/scripts/video-data.js(v=${updateVersion})}"></script>
+	<script th:src="@{/common/scripts/video-business.js(v=${updateVersion})}"></script>
+	<script th:src="@{/common/scripts/video-util.js(v=${updateVersion})}"></script>
+
+
+<script>
+	$(function() {
+			var availableTags = [];
+		/* $("#search-tags").autocomplete({
+		 source: availableTags
+		 }); */
+	});
+
+	$('body').on('click', function (e) {
+	    $('.my-popover').each(function () {
+	        //the 'is' for buttons that trigger popups
+	        //the 'has' for icons within a button that triggers a popup
+	        if (!$(this).is(e.target) && $(this).has(e.target).length === 0 && $('.popover').has(e.target).length === 0) {
+	            $(this).popover('hide');
+	        }
+	    });
+	});
+
+	/* To centrally align modal with respect to window */
+	$(function(){
+		$('.header-flag').hover(function() {
+					$(this).addClass('open');
+				},
+				function() {
+					$(this).removeClass('open');
+				});
+	});
+	$(function() {
+	    function reposition() {
+	        var modal = $(this),
+	            dialog = modal.find('.modal-dialog');
+	        modal.css('display', 'block');
+
+	        // Dividing by two centers the modal exactly, but dividing by three
+	        // or four works better for larger screens.
+	        dialog.css("margin-top", Math.max(0, ($(window).height() - dialog.height()) / 2));
+	    }
+
+	    // Reposition when a modal is shown
+	    $('.modal').on('show.bs.modal', reposition);
+	    // Reposition when the window is resized
+	    $(window).on('resize', function() {
+	        $('.modal:visible').each(reposition);
+	    });
+	});
+
+</script>
+</th:block>
+
+
+<!-- defining meta jsp javascript things -->
+
+<th:block th:fragment="meta-javascript-fragment">
+	<!-- Jquery Included in head to avoid $ undefined for scripts loaded before initializer scripts -->
+	<!-- Ideally this should be in initializer.jsp -->
+	<!-- change cdn url, so website can be accessed from China -->
+	<!--[if !IE]> -->
+	<script type="text/javascript">
+		window.jQuery || document.write("<script src='" +
+				"https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js" +
+				"'>" + "</"+"script>");
+	</script>
+	<!-- <![endif]-->
+
+	<!-- jQuery 2.x need IE9+ -->
+	<!--[if IE]>
+<script type="text/javascript">
+window.jQuery || document.write("<script src='" + "https://cdnjs.cloudflare.com/ajax/libs/jquery/1.12.2/jquery.min.js" +
+		"'>" + "<" + "/script>");
+</script>
+<![endif]-->
+	<script th:src="@{/jsp/scripts/mocha.js}"></script>
+	<script type="text/javascript">
+		/**
+		 * google analytics class
+		 */
+
+		var CustomAnalytics = new function() {
+
+			/*
+			Umair
+			sendAnalytics Function is called to fire an event
+			Category: grouping events into desired tracking groups
+			Action: the action the user takes
+			Label: to differentiate this event among the others (optional)
+			 */
+			this.sendAnalytics = function(params) {
+				ga('send', {
+					hitType : 'event',
+					eventCategory : params.category,
+					eventAction : params.action,
+					eventLabel : params.label,
+					eventValue : params.value,
+				});
+
+			};
+
+			/* Ramsha Ambreen
+			 setUserInformation Function works if login is successful.
+			 It updates following on the tracker:
+			 - userId
+			 - Logged In (Custom Dimension 1)
+			 - Balance (Custom Dimension 2)
+			 - Level (Custom Dimension 3)
+			 - Account Type (Custom Dimension 4)
+			 - Agency (Custom Dimension 5)
+			 */
+			this.setUserInformation = function(params) {
+				ga('set', 'userId', params.userId);
+				ga('set', {
+					'dimension1' : params.isLoggedIn, // dimension1 = Logged In
+					'dimension2' : params.balance, // dimension2 = Balance
+					'dimension3' : params.level, // dimension3 = Level
+					'dimension4' : params.accountType, // dimension4 = Account Type
+					'dimension5' : params.agency // dimension5= Agency of Talent
+				});
+				ga('send', 'pageview');
+			};
+
+			/*
+			Umair
+			This is the Universal Analytics tracking code for website tracking.
+			This function should be called on every webpage we want to track
+			 */
+			this.connectToGoogle = function() {
+				(function(i, s, o, g, r, a, m) {
+					i['GoogleAnalyticsObject'] = r;
+					i[r] = i[r] || function() {
+						(i[r].q = i[r].q || []).push(arguments)
+					}, i[r].l = 1 * new Date();
+					a = s.createElement(o), m = s.getElementsByTagName(o)[0];
+					a.async = 1;
+					a.src = g;
+					m.parentNode.insertBefore(a, m)
+				})(window, document, 'script',
+						'//www.google-analytics.com/analytics.js', 'ga');
+				ga('create', 'UA-75699129-1', 'auto');
+
+			};
+		}(CustomAnalytics || {});
+
+		// initialize analytics on every page
+		CustomAnalytics.connectToGoogle();
+		function pwstrength(){
+			if($("#inputPassword").val().length <= 0)
+				$("#complexity").hide();
+			else
+				$("#complexity").show();
+		}
+
+		/*jQuery(document).ready(function () {
+			var options = {};
+			options.ui = {
+				container: "#pwd-container",
+				showVerdictsInsideProgressBar: true,
+				viewports: {
+					progress: ".pwstrength_viewport_progress"
+				},
+				progressBarExtraCssClasses: "progress-bar-striped active"
+			};
+
+			options.common = {
+				debug: false,
+				onLoad: function () {
+					$('#messages').text('Start typing password');
+				}
+			};
+			$('#inputPassword').pwstrength(options);
+			$(".progress").css("height","19px");
+			$(".password-verdict").css("color","black");
+		});*/
+		function resendEmail(){
+			document.getElementById("resendEmailButton").disabled = true;
+			$("#resendEmailButton").css("cursor", "not-allowed");
+			AjaxAPI.resendEmail(function(data) {
+				debugger
+				if ('000000' != getAttr(data, 'code')) { // 00000 = success
+					swal("Good job!", "Email send!", "success");
+					document.getElementById("resendEmailButton").disabled = false;
+					$("#resendEmailButton").css("cursor", "pointer");
+				}
+			});
+		}
+	</script>
+</th:block>
+
+
+</html>
